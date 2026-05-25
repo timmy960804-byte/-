@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>註冊 | 永續食光</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">🍃 永續食光</a>
+            <ul id="nav-links">
+                <!-- Javascript dynamically fills this -->
+            </ul>
+        </nav>
+    </header>
+
+    <main style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 250px);">
+        <div class="form-container" style="width: 100%; max-width: 450px;">
+            <h1 class="page-title" style="margin-bottom: 2rem;">建立新帳號</h1>
+            <form id="register-form">
+                <div class="form-group">
+                    <label>您是？</label>
+                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 400; cursor: pointer;">
+                            <input type="radio" name="role" value="user" checked> 🎓 一般使用者
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; font-weight: 400; cursor: pointer;">
+                            <input type="radio" name="role" value="merchant"> 🏪 合作店家
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="reg_username" id="label_username">帳號名稱 (學生請使用學校信箱)</label>
+                    <input type="text" id="reg_username" name="username" placeholder="例: d1234567@o365.fcu.edu.tw 或 店家名稱" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg_password">密碼</label>
+                    <input type="password" id="reg_password" name="password" placeholder="請設定密碼" required>
+                </div>
+                
+                <button type="submit" style="margin-top: 2rem;">註冊並登入</button>
+            </form>
+            <p style="text-align: center; margin-top: 2rem; color: var(--text-muted);">
+                已經有帳號了嗎？ <a href="login.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">直接登入</a>
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 永續食光 - 逢甲大學專屬場域</p>
+    </footer>
+
+    <script src="main.js"></script>
+    <script>
+        document.querySelectorAll('input[name="role"]').forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const label = document.getElementById('label_username');
+                if (e.target.value === 'merchant') {
+                    label.textContent = '店家名稱 (也是登入帳號)';
+                } else {
+                    label.textContent = '姓名或暱稱';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

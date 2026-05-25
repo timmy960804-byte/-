@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系統管理後台 | 永續食光</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">🍃 永續食光</a>
+            <ul id="nav-links">
+                <!-- Javascript dynamically fills this -->
+            </ul>
+        </nav>
+    </header>
+
+    <main style="max-width: 1000px; margin: 0 auto; padding-top: 2rem;">
+        <h2 class="page-title">系統管理員後台</h2>
+        
+        <!-- 全站數據看板 -->
+        <section style="margin-bottom: 3rem;">
+            <h3>全站營運數據 (Global Stats)</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <div class="card" style="text-align: center; background: #ECFDF5; border: 1px solid #A7F3D0;">
+                    <h4 style="color: #047857; font-size: 1.1rem; margin-bottom: 0.5rem;">總計拯救食物</h4>
+                    <p style="font-size: 2.5rem; font-weight: bold; color: #065F46;"><span id="admin-total-food">0</span> <span style="font-size: 1.2rem;">份</span></p>
+                </div>
+                <div class="card" style="text-align: center; background: #EFF6FF; border: 1px solid #BFDBFE;">
+                    <h4 style="color: #1D4ED8; font-size: 1.1rem; margin-bottom: 0.5rem;">總減碳量</h4>
+                    <p style="font-size: 2.5rem; font-weight: bold; color: #1E3A8A;"><span id="admin-total-carbon">0</span> <span style="font-size: 1.2rem;">kg</span></p>
+                </div>
+                <div class="card" style="text-align: center; background: #FEF2F2; border: 1px solid #FECACA;">
+                    <h4 style="color: #B91C1C; font-size: 1.1rem; margin-bottom: 0.5rem;">總發放點數</h4>
+                    <p style="font-size: 2.5rem; font-weight: bold; color: #991B1B;"><span id="admin-total-points">0</span> <span style="font-size: 1.2rem;">點</span></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 店家審核 -->
+        <section>
+            <h3>待審核店家列表 (Pending Approvals)</h3>
+            <div style="background: white; border-radius: var(--border-radius-lg); padding: 1.5rem; box-shadow: var(--shadow-sm); margin-top: 1rem;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--glass-border);">
+                            <th style="padding: 1rem; color: var(--text-muted);">店家帳號/名稱</th>
+                            <th style="padding: 1rem; color: var(--text-muted);">註冊身分</th>
+                            <th style="padding: 1rem; color: var(--text-muted);">狀態</th>
+                            <th style="padding: 1rem; color: var(--text-muted);">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-pending-tbody">
+                        <!-- 動態插入 -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 永續食光 - 逢甲大學專屬場域</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

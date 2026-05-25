@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>永續食光 | 逢甲校園剩食共享</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">🍃 永續食光</a>
+            <ul id="nav-links">
+                <!-- Javascript dynamically fills this -->
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h1>拯救食物，綠色校園</h1>
+        <p>逢甲商圈的每一份剩食，都是我們為地球減碳的機會。立即領取即期美味，享受優惠同時為永續盡一份心力！</p>
+    </div>
+
+    <main>
+        <h2 class="page-title">今日可領取餐盒</h2>
+        <p class="page-subtitle">探索逢甲商圈最新釋出的即期美食</p>
+        
+        <!-- 地圖容器 -->
+        <div id="map" style="margin-bottom: 3rem;"></div>
+
+        <div class="card-container" id="boxes-container">
+            <!-- JavaScript 會在這裡動態渲染卡片 -->
+        </div>
+    </main>
+
+    <!-- Checkout Modal -->
+    <div class="modal-overlay" id="checkout-modal">
+        <div class="modal">
+            <button class="close-btn" onclick="closeReserveModal()">×</button>
+            <h2>確認預約與結帳</h2>
+            
+            <div class="summary-box">
+                <p><span>🏪 店家：</span> <strong id="modal-store-name"></strong></p>
+                <p><span>🍱 餐盒：</span> <strong id="modal-box-name"></strong></p>
+                <p><span>💰 原價：</span> <strong>NT$ <span id="modal-price"></span></strong></p>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label>使用食光點數折抵 (目前擁有: <span id="modal-user-points" style="color: var(--primary-dark); font-weight: bold;"></span> 點)</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="number" id="point-input" min="0" value="0" oninput="updateFinalPrice()" style="margin-top: 0.5rem; flex: 1; padding: 0.8rem; font-size: 1.1rem;">
+                    <span style="font-weight: bold; color: var(--text-muted); font-size: 1.1rem;">點</span>
+                </div>
+                <small style="color: var(--text-muted); display: block; margin-top: 5px;">* 1 點可折抵 1 元，實付金額還可享 10% 點數回饋喔！</small>
+            </div>
+
+            <div class="summary-box" style="margin-bottom: 1.5rem;">
+                <p><span>點數折抵：</span> <strong id="modal-discount" style="color: #EF4444;">-0</strong></p>
+                <p><span>應付總額：</span> <strong style="font-size: 1.75rem;">NT$ <span id="modal-final"></span></strong></p>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label>請選擇付款方式</label>
+                <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-top: 0.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.8rem 1rem; border: 1px solid #E5E7EB; border-radius: var(--border-radius-md); background: #F9FAFB;">
+                        <input type="radio" name="payment_method" value="store" checked> 🏪 到店付款
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.8rem 1rem; border: 1px solid #E5E7EB; border-radius: var(--border-radius-md); background: #F9FAFB;">
+                        <input type="radio" name="payment_method" value="credit"> 💳 線上刷卡 (模擬)
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; padding: 0.8rem 1rem; border: 1px solid #E5E7EB; border-radius: var(--border-radius-md); background: #F9FAFB;">
+                        <input type="radio" name="payment_method" value="linepay"> 📱 LINE Pay (模擬)
+                    </label>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn-outline" onclick="closeReserveModal()" style="margin-top: 0;">取消</button>
+                <button onclick="confirmCheckout()" style="margin-top: 0;">確認預訂</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Simulation Modal -->
+    <div class="modal-overlay" id="payment-simulation-modal" style="z-index: 10000;">
+        <div class="modal" style="text-align: center; padding: 3rem; max-width: 400px;">
+            <div id="payment-processing">
+                <div class="spinner" style="margin: 0 auto 1.5rem auto;"></div>
+                <h2 style="margin-bottom: 0.5rem;">正在處理付款...</h2>
+                <p style="color: var(--text-muted);">請勿關閉視窗</p>
+            </div>
+            <div id="payment-success" style="display: none;">
+                <div style="font-size: 4rem; color: #10B981; margin-bottom: 1rem; line-height: 1;">✅</div>
+                <h2 style="margin-bottom: 0.5rem;">付款成功！</h2>
+                <p style="color: var(--text-muted);">已完成線上支付，請依約定時間前往店家取餐。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal-overlay" id="review-modal">
+        <div class="modal" style="max-width: 500px;">
+            <button class="close-btn" onclick="closeReviewModal()">×</button>
+            <h2 id="review-store-name">店家評價</h2>
+            
+            <div class="reviews-list" id="reviews-container">
+                <!-- JavaScript 會在這裡動態渲染歷史留言 -->
+            </div>
+
+            <div id="review-form-container" style="display: none; margin-top: 1.5rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">留下您的評價</h3>
+                <form id="submit-review-form">
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label>星級評分</label>
+                        <select id="review-rating" required style="width: 100%; padding: 0.8rem; border-radius: var(--border-radius-md); border: 1px solid #D1D5DB;">
+                            <option value="5">⭐⭐⭐⭐⭐ (5星 - 非常棒)</option>
+                            <option value="4">⭐⭐⭐⭐ (4星 - 很好)</option>
+                            <option value="3">⭐⭐⭐ (3星 - 普通)</option>
+                            <option value="2">⭐⭐ (2星 - 待加強)</option>
+                            <option value="1">⭐ (1星 - 很差)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 1rem;">
+                        <label>留言內容</label>
+                        <textarea id="review-comment" rows="3" placeholder="說點什麼吧..." required style="width: 100%; padding: 0.8rem; border-radius: var(--border-radius-md); border: 1px solid #D1D5DB; resize: vertical; font-family: inherit;"></textarea>
+                    </div>
+                    <button type="submit" style="margin-top: 0.5rem; width: 100%;">送出評價</button>
+                </form>
+            </div>
+            <div id="review-login-prompt" style="text-align: center; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--glass-border); color: var(--text-muted);">
+                想要留言嗎？請先 <a href="login.html" style="color: var(--primary); font-weight: bold;">登入一般使用者帳號</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 永續食光 - 逢甲大學專屬場域</p>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="main.js"></script>
+</body>
+</html>

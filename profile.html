@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>個人中心 | 永續食光</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .status-pending { background: #FEF3C7; color: #D97706; }
+        .status-completed { background: #D1FAE5; color: #047857; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">🍃 永續食光</a>
+            <ul id="nav-links">
+                <!-- Javascript dynamically fills this -->
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="profile-header">
+            <h1>嗨，<span id="user-name"></span>！歡迎回來</h1>
+            <p class="page-subtitle" style="margin-bottom: 1rem;">您的每一次選擇，都在為地球盡一份心力</p>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-label">累積食光點數</div>
+                <div class="stat-value" id="user-points">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">減少碳排放量 (kg)</div>
+                <div class="stat-value" id="user-carbon">0</div>
+            </div>
+        </div>
+
+        <!-- 福利兌換區 -->
+        <section style="margin-bottom: 2rem;">
+            <h2 class="page-title" style="font-size: 2rem; margin-top: 2rem;">🎁 商圈福利兌換區</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <div class="card" style="text-align: center; border: 1px solid #E5E7EB;">
+                    <h4 style="margin-bottom: 0.5rem; font-size: 1.2rem;">逢甲冰品 10 元折價券</h4>
+                    <p style="color: var(--primary); font-weight: bold; font-size: 1.5rem; margin-bottom: 1rem;">50 點</p>
+                    <button class="btn-outline" style="width: 100%; margin-top: 0;" onclick="redeemReward(50, '逢甲冰品 10 元折價券')">立即兌換</button>
+                </div>
+                <div class="card" style="text-align: center; border: 1px solid #E5E7EB;">
+                    <h4 style="margin-bottom: 0.5rem; font-size: 1.2rem;">環保餐具組 (校內領取)</h4>
+                    <p style="color: var(--primary); font-weight: bold; font-size: 1.5rem; margin-bottom: 1rem;">200 點</p>
+                    <button class="btn-outline" style="width: 100%; margin-top: 0;" onclick="redeemReward(200, '環保餐具組')">立即兌換</button>
+                </div>
+            </div>
+        </section>
+
+        <h2 class="page-title" style="font-size: 2rem;">歷史領取紀錄</h2>
+        
+        <div class="table-container">
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>領取日期</th>
+                            <th>店家名稱</th>
+                            <th>餐盒項目</th>
+                            <th>使用折抵</th>
+                            <th>狀態 / 獲得點數</th>
+                            <th>減碳貢獻 (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-tbody">
+                        <!-- JavaScript 動態產生 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- QR Code Modal -->
+    <div class="modal-overlay" id="qr-modal">
+        <div class="modal" style="text-align: center; max-width: 350px;">
+            <button class="close-btn" onclick="document.getElementById('qr-modal').classList.remove('active')">×</button>
+            <h2 style="margin-bottom: 1rem;">領餐憑證</h2>
+            <div style="background: white; padding: 1rem; display: inline-block; border-radius: 8px; border: 1px solid #E5E7EB;">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=sf_order_sim" alt="QR Code" style="width: 200px; height: 200px;">
+            </div>
+            <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">請向店家出示此條碼進行核銷</p>
+            <p style="font-weight: bold; margin-top: 0.5rem; color: var(--primary-dark);" id="qr-order-id"></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 永續食光 - 逢甲大學專屬場域</p>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>
